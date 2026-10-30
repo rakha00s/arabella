@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Happy Birthday!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Caveat:wght@600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sky: #dcedff;
+    --soft: #8fc3ff;
+    --blue: #2f6fdb;
+    --deep: #1f55b0;
+    --ice: #e6f1ff;
+    --navy: #1f3555;
+    --white: #f7fbff;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: "Fredoka", system-ui, sans-serif; color: var(--navy); text-align: center;
+    background: var(--sky); min-height: 100vh; overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 12% 18%, var(--white) 0 2px, transparent 3px),
+      radial-gradient(circle at 78% 62%, var(--white) 0 2px, transparent 3px),
+      radial-gradient(circle at 40% 88%, var(--white) 0 2px, transparent 3px);
+    background-size: 90px 90px, 120px 120px, 150px 150px;
+  }
+  main { max-width: 560px; margin: 0 auto; padding: 56px 18px; min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; justify-content: center; }
+  [hidden] { display: none !important; }
+  h1 { font-size: clamp(2rem, 8vw, 3rem); font-weight: 600; line-height: 1.1; margin: 0 0 6px; color: var(--blue); }
+  h2 { font-size: 1.5rem; font-weight: 600; margin: 0 0 14px; color: var(--blue); }
+  .age { font-family: "Caveat", cursive; font-size: 1.9rem; margin: 0 0 20px; }
+  .card { background: var(--white); border-radius: 28px; padding: 24px 20px; box-shadow: 0 6px 0 var(--soft); }
+  .card p { margin: 0 0 18px; font-size: 1.15rem; line-height: 1.6; }
+
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 22px; }
+  .grid img, .letterimg {
+    width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 18px; display: block;
+    background: var(--ice); box-shadow: 0 3px 0 var(--soft);
+  }
+  .letterimg { max-width: 300px; margin: 0 auto 18px; }
+  .letter { white-space: pre-line; text-align: left; }
+  .emoji { font-size: 3.5rem; line-height: 1; margin-bottom: 10px; }
+
+  .btn {
+    font: inherit; font-size: 1.1rem; font-weight: 500; padding: 12px 28px; border: 0; border-radius: 999px;
+    background: var(--blue); color: #fff; cursor: pointer; box-shadow: 0 5px 0 var(--deep);
+  }
+  .btn:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--deep); }
+  .btn.ghost { background: var(--white); color: var(--blue); box-shadow: inset 0 0 0 2px var(--soft), 0 5px 0 var(--soft); }
+  .btn:focus-visible, .music:focus-visible, .modal button:focus-visible { outline: 3px solid var(--navy); outline-offset: 4px; }
+  .row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .small { font-size: 1.05rem; margin: 16px 0 0; }
+
+  .music {
+    position: fixed; top: 12px; right: 12px; z-index: 50; width: 44px; height: 44px; border: 0;
+    border-radius: 50%; background: var(--white); box-shadow: 0 3px 0 var(--soft); font-size: 1.3rem; cursor: pointer;
+  }
+
+  /* Lock screen + popup */
+  .lock {
+    position: fixed; inset: 0; z-index: 100; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; padding: 24px; background: var(--sky);
+  }
+  .lock .big { font-size: 4.5rem; line-height: 1; margin-bottom: 8px; animation: bob 2.6s ease-in-out infinite; }
+  .lock h2 { font-size: 1.8rem; margin-bottom: 6px; }
+  .lock p { margin: 0 0 18px; font-size: 1.05rem; }
+  @keyframes bob { 0%,100% { translate: 0 0; } 50% { translate: 0 -8px; } }
+  .count { display: flex; gap: 10px; justify-content: center; margin-bottom: 26px; }
+  .count div { background: var(--white); border-radius: 18px; padding: 10px 0; width: 66px; box-shadow: 0 4px 0 var(--soft); }
+  .count b { display: block; font-size: 1.7rem; font-weight: 600; color: var(--blue); }
+  .count small { font-size: .8rem; }
+  .modal {
+    position: fixed; inset: 0; z-index: 200; display: none; align-items: center; justify-content: center;
+    padding: 24px; background: rgba(31, 53, 85, .45);
+  }
+  .modal.on { display: flex; }
+  .modal div { background: var(--white); border-radius: 28px; padding: 28px 24px; max-width: 360px; box-shadow: 0 6px 0 var(--soft); }
+  .modal p { margin: 0 0 18px; font-size: 1.15rem; line-height: 1.5; }
+  .modal button { font: inherit; font-weight: 500; padding: 10px 26px; border: 0; border-radius: 999px; background: var(--blue); color: #fff; cursor: pointer; }
+
+  .gif { display: block; width: 100%; max-width: 260px; max-height: 260px; object-fit: contain; margin: 0 auto 16px; border-radius: 18px; background: var(--ice); }
+  #askview:not([hidden]), #noview:not([hidden]) { animation: popIn .45s cubic-bezier(.2,1.4,.4,1); }
+
+  /* Animations */
+  .step { animation: stepIn .55s cubic-bezier(.2,.9,.3,1) both; }
+  @keyframes stepIn { from { opacity: 0; transform: translateY(28px) scale(.97); } to { opacity: 1; transform: none; } }
+  .grid img { animation: popIn .5s cubic-bezier(.2,1.4,.4,1) backwards; animation-delay: calc(var(--i) * 90ms + 150ms); transition: transform .2s; }
+  .grid img:hover { transform: scale(1.06) rotate(-2deg); }
+  @keyframes popIn { from { opacity: 0; transform: scale(.4) rotate(-8deg); } to { opacity: 1; transform: none; } }
+  .btn { transition: transform .15s, box-shadow .15s; }
+  .btn:hover { transform: translateY(-3px); }
+  .btn[data-go] { animation: pulse 2s ease-in-out 1s infinite; }
+  @keyframes pulse { 0%,100% { scale: 1; } 50% { scale: 1.06; } }
+  .emoji { animation: bounce 1.6s ease-in-out infinite; }
+  @keyframes bounce { 0%,100% { translate: 0 0; } 40% { translate: 0 -14px; } 60% { translate: 0 -6px; } }
+  h1 { animation: titleIn .8s cubic-bezier(.2,1.4,.4,1) both; }
+  @keyframes titleIn { from { opacity: 0; transform: scale(.6) translateY(-20px); } to { opacity: 1; transform: none; } }
+  .letterimg { animation: popIn .7s cubic-bezier(.2,1.4,.4,1) .1s both; }
+  .letter { animation: stepIn .9s ease .4s backwards; }
+  #voicebtn:not(.playing) { animation: stepIn .9s ease .8s backwards; }
+  .small:not([hidden]) { animation: popIn .45s cubic-bezier(.2,1.4,.4,1) both; }
+  .shake { animation: shake .45s ease; }
+  @keyframes shake { 0%,100% { translate: 0; } 20% { translate: -10px; } 40% { translate: 9px; } 60% { translate: -6px; } 80% { translate: 4px; } }
+  .count .tick { animation: tickBump .3s ease; }
+  @keyframes tickBump { 50% { transform: translateY(-5px) scale(1.08); } }
+  .lock.leaving { animation: lockOut .7s ease forwards; pointer-events: none; }
+  @keyframes lockOut { to { opacity: 0; transform: scale(1.3); } }
+  .modal.on { animation: fadeIn .25s ease; }
+  .modal.on div { animation: popIn .4s cubic-bezier(.2,1.4,.4,1); }
+  @keyframes fadeIn { from { opacity: 0; } }
+  .music { transition: transform .15s; }
+  .music:hover { transform: scale(1.1); }
+  .music:active { transform: scale(.9) rotate(-12deg); }
+  .music.on, .btn.playing { --by: 3px; --bc: var(--soft); animation: ring 1.8s ease-out infinite; }
+  .btn.playing { --by: 5px; --bc: var(--deep); }
+  @keyframes ring {
+    0% { box-shadow: 0 var(--by) 0 var(--bc), 0 0 0 0 rgba(47,111,219,.55); }
+    100% { box-shadow: 0 var(--by) 0 var(--bc), 0 0 0 18px rgba(47,111,219,0); }
+  }
+
+  .heart { position: fixed; bottom: -30px; pointer-events: none; z-index: 60; animation: rise 3.2s ease-out forwards; }
+  @keyframes rise { to { transform: translateY(-110vh) rotate(var(--r, 12deg)); opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; animation-delay: 0s !important; transition-duration: .01ms !important; } }
+</style>
+</head>
+<body>
+<div class="lock" id="lock">
+  <div class="big">🔒</div>
+  <h2>A surprise is waiting!</h2>
+  <p>It opens on 31 October 2026, 00:00 WITA</p>
+  <div class="count">
+    <div><b id="cd-d">0</b><small>days</small></div>
+    <div><b id="cd-h">0</b><small>hours</small></div>
+    <div><b id="cd-m">0</b><small>min</small></div>
+    <div><b id="cd-s">0</b><small>sec</small></div>
+  </div>
+  <button class="btn" id="openbtn">Open 🎁</button>
+</div>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modaltext">
+  <div><img class="gif" id="waitgif" alt="A waiting reaction gif"><p id="modaltext"></p><button id="modalclose">OK</button></div>
+</div>
+
+<button class="music" id="musicbtn" aria-label="Toggle music">🔊</button>
+
+<main id="page">
+  <!-- Step 0: 6 photos, 2 rows -->
+  <section class="step">
+    <h1 id="title">Happy Birthday!</h1>
+    <p class="age" id="age"></p>
+    <div class="grid" id="grid"></div>
+    <button class="btn" data-go="1">Next</button>
+  </section>
+
+  <!-- Step 1 -->
+  <section class="step card">
+    <img class="gif" id="lettergif" alt="A sweet reaction gif">
+    <h2>I wrote a letter for you 💌</h2>
+    <button class="btn" data-go="2">Next</button>
+  </section>
+
+  <!-- Step 2 -->
+  <section class="step card">
+    <div id="askview">
+      <img class="gif" id="askgif" alt="A cute reaction gif">
+      <h2>Do you want to open it?</h2>
+      <div class="row">
+        <button class="btn" data-go="3">Open it</button>
+        <button class="btn ghost" id="nobtn">No, ty</button>
+      </div>
+    </div>
+    <div id="noview" hidden>
+      <img class="gif" id="nogif" alt="Another reaction gif">
+      <h2>lah kok gamau sih 😤</h2>
+      <button class="btn" id="backbtn">← Back</button>
+    </div>
+  </section>
+
+  <!-- Step 3: the letter -->
+  <section class="step card">
+    <img class="letterimg" id="letterimg" alt="A special photo">
+    <p class="letter" id="letter"></p>
+    <button class="btn" id="voicebtn">▶ Play my voice</button>
+  </section>
+</main>
+
+<script>
+  // ✏️ EDIT THESE ✏️
+  // ✏️ EDIT THESE ✏️
+  const NAME = "Aurelia";
+  const AGE = 25;
+  const PHOTOS = ["photos/1.jpg", "photos/2.jpg", "photos/3.jpg", "photos/4.jpg", "photos/5.jpg", "photos/6.jpg"];
+  const LETTER_PHOTO = "photos/7.jpg";
+  const LETTER = "Dear " + NAME + ",\n\nHappy birthday to my beloved adek, and also a friend who is real and true, and a lot of fun to hang out with too. Walaupun hubungan kita sudah berantakan belakangan ini, but i hope the universe will give u all the good and genuine things that u deserve.\n\nWith love,\nAbang Rakha";
+  const ASK_GIF = "gifs/ask.gif";   // shown on "Do you want to open it?"
+  const NO_GIF = "gifs/no.gif";     // shown after "No, ty"
+  const WAIT_GIF = "gifs/wait.gif"; // shown in the popup when she opens too early
+  const LETTER_GIF = "gifs/letter.gif"; // shown on "I wrote a letter for you"
+  const MUSIC = "music.mp3";
+  const VOICE = "voice.mp3";
+  const OPEN_AT = new Date("2026-10-30T19:48:00+08:00"); // 31 Oct 2026, 00:00 WITA (UTC+8)
+  const LOCK_TEXT = "its not the time yet, sweetie. ngeyellllll";
+
+  const $ = (id) => document.getElementById(id);
+  const page = $("page");
+  const music = new Audio(MUSIC); music.loop = true;
+  const voice = new Audio(VOICE);
+
+  document.title = "Happy Birthday, " + NAME + "!";
+  $("title").textContent = "Happy Birthday, " + NAME + "!";
+  $("age").textContent = AGE ? "Today you are " + AGE + " ✨" : "";
+  $("letter").textContent = LETTER;
+  $("letterimg").src = LETTER_PHOTO;
+  PHOTOS.forEach((src, i) => {
+    const img = document.createElement("img");
+    img.src = src; img.alt = "Photo " + (i + 1); img.loading = "lazy"; img.style.setProperty("--i", i);
+    $("grid").appendChild(img);
+  });
+
+  // Steps
+  const steps = [...document.querySelectorAll(".step")];
+  function go(i) { steps.forEach((s, j) => (s.hidden = j !== i)); window.scrollTo(0, 0); if (i === 2) showAsk(); if (i === 3) hearts(14); }
+  document.querySelectorAll("[data-go]").forEach((b) => b.addEventListener("click", () => go(+b.dataset.go)));
+  $("askgif").src = ASK_GIF;
+  $("lettergif").src = LETTER_GIF;
+  $("waitgif").src = WAIT_GIF;
+  $("nogif").src = NO_GIF;
+  function showAsk() { $("noview").hidden = true; $("askview").hidden = false; }
+  $("nobtn").addEventListener("click", () => {
+    $("askview").hidden = true;
+    $("noview").hidden = false;
+    shake($("noview"));
+  });
+  $("backbtn").addEventListener("click", showAsk);
+  go(0);
+
+  // Hearts
+  function hearts(n) {
+    const set = ["💙", "🩵", "✨", "🦋", "⭐"];
+    for (let i = 0; i < n; i++) {
+      const h = document.createElement("span");
+      h.className = "heart";
+      h.textContent = set[Math.floor(Math.random() * set.length)];
+      h.style.left = Math.random() * 96 + "vw";
+      h.style.fontSize = 18 + Math.random() * 20 + "px";
+      h.style.animationDelay = Math.random() * 0.8 + "s";
+      h.style.setProperty("--r", Math.random() * 60 - 30 + "deg");
+      document.body.appendChild(h);
+      setTimeout(() => h.remove(), 4500);
+    }
+  }
+
+  function shake(el) { el.classList.remove("shake"); void el.offsetWidth; el.classList.add("shake"); }
+
+  // Lock screen
+  const lock = $("lock"), modal = $("modal");
+  page.setAttribute("inert", "");
+  document.body.style.overflow = "hidden";
+  function tick() {
+    const s = Math.max(0, Math.floor((OPEN_AT - Date.now()) / 1000));
+    $("cd-d").textContent = Math.floor(s / 86400);
+    $("cd-h").textContent = Math.floor((s % 86400) / 3600);
+    $("cd-m").textContent = Math.floor((s % 3600) / 60);
+    const sec = $("cd-s");
+    if (sec.textContent != s % 60) { sec.textContent = s % 60; sec.parentElement.classList.remove("tick"); void sec.offsetWidth; sec.parentElement.classList.add("tick"); }
+    if (s === 0) $("openbtn").textContent = "It's time! Open 🎉";
+  }
+  tick();
+  const timer = setInterval(tick, 1000);
+  function closeModal() { modal.classList.remove("on"); $("openbtn").focus(); }
+  $("modalclose").addEventListener("click", closeModal);
+  modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
+
+  $("openbtn").addEventListener("click", () => {
+    if (Date.now() < OPEN_AT) {
+      $("modaltext").textContent = LOCK_TEXT;
+      modal.classList.add("on");
+      $("modalclose").focus();
+      shake($("openbtn")); shake(lock.querySelector(".big"));
+      return;
+    }
+    clearInterval(timer);
+    lock.classList.add("leaving");
+    setTimeout(() => lock.remove(), 700);
+    page.removeAttribute("inert");
+    document.body.style.overflow = "";
+    music.play().catch(() => {});
+    hearts(20);
+  });
+
+  // Music button
+  const mb = $("musicbtn");
+  music.addEventListener("play", () => { mb.textContent = "🔊"; mb.classList.add("on"); });
+  music.addEventListener("pause", () => { mb.textContent = "🔇"; mb.classList.remove("on"); });
+  mb.addEventListener("click", () => (music.paused ? music.play() : music.pause()));
+
+  // Voice: lower music to 30% while it plays
+  const vb = $("voicebtn");
+  voice.addEventListener("play", () => { music.volume = 0.3; vb.textContent = "⏸ Pause my voice"; vb.classList.add("playing"); });
+  const resume = () => { music.volume = 1; vb.textContent = "▶ Play my voice"; vb.classList.remove("playing"); };
+  voice.addEventListener("pause", resume);
+  voice.addEventListener("ended", resume);
+  vb.addEventListener("click", () => (voice.paused ? voice.play() : voice.pause()));
+</script>
+</body>
+</html>
